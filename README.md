@@ -4,7 +4,7 @@ this is android airing
 Welcome Star and Issues
 
 ## Use this
-observer
+1,observer
 ```
 Airing.getDefault().observer(this).register("main", new OnAiringListener() {
     @Override
@@ -18,18 +18,18 @@ Airing.getDefault().observer(this).register("main", new OnAiringListener() {
     }
 });
 ```
-sender
+2,sender
 ```
 //sendWhat
-Airing.get("Air").sender("main").sendWhat(1);
+Airing.getDefault().sender("main").sendWhat(1);
 
 //sendObject
-Airing.get("Air").sender("main").sendObject(this);
+Airing.getDefault().sender("main").sendObject(this);
 
 //sendEmpty
-Airing.get("Air").sender("main").sendEmpty();
+Airing.getDefault().sender("main").sendEmpty();
 ```
-unregister
+3,unregister
 ```
 Airing.unregister(this);
 ```
