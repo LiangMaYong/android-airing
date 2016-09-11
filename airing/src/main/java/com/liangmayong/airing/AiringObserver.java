@@ -32,7 +32,7 @@ public class AiringObserver {
     public AiringObserver register(final String action, final OnAiringListener eventListener) {
         if (registerAction == null) {
             try {
-                registerAction = Airing.class.getDeclaredMethod("registerAction", Object.class, String.class,
+                registerAction = Airing.class.getDeclaredMethod("register", Object.class, String.class,
                         OnAiringListener.class);
                 registerAction.setAccessible(true);
             } catch (Exception e) {
@@ -57,7 +57,7 @@ public class AiringObserver {
     public AiringObserver register(final String[] actions, final OnAiringListener eventListener) {
         if (registerActions == null) {
             try {
-                registerActions = Airing.class.getDeclaredMethod("registerActions", Object.class, String[].class,
+                registerActions = Airing.class.getDeclaredMethod("register", Object.class, String[].class,
                         OnAiringListener.class);
                 registerActions.setAccessible(true);
             } catch (Exception e) {
@@ -81,7 +81,7 @@ public class AiringObserver {
     public AiringObserver unregister(String action) {
         if (unregisterAction == null) {
             try {
-                unregisterAction = Airing.class.getDeclaredMethod("unregisterAction", Object.class, String.class,
+                unregisterAction = Airing.class.getDeclaredMethod("unregister", Object.class, String.class,
                         OnAiringListener.class);
                 unregisterAction.setAccessible(true);
             } catch (Exception e) {
@@ -105,7 +105,7 @@ public class AiringObserver {
     public AiringObserver unregister(String[] actions) {
         if (unregisterActions == null) {
             try {
-                unregisterActions = Airing.class.getDeclaredMethod("unregisterActions", Object.class, String[].class);
+                unregisterActions = Airing.class.getDeclaredMethod("unregister", Object.class, String[].class);
                 unregisterActions.setAccessible(true);
             } catch (Exception e) {
             }
@@ -127,7 +127,7 @@ public class AiringObserver {
     public AiringObserver unregister() {
         if (unregisterObject == null) {
             try {
-                unregisterObject = Airing.class.getDeclaredMethod("unregisterActions", Object.class);
+                unregisterObject = Airing.class.getDeclaredMethod("unregister", Object.class);
                 unregisterObject.setAccessible(true);
             } catch (Exception e) {
             }

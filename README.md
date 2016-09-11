@@ -3,6 +3,8 @@ this is android airing
 
 Welcome Star and Issues
 
+download jar : [android-airing-src.jar](https://raw.githubusercontent.com/LiangMaYong/android-airing/master/jar/android-airing-src.jar)
+
 ## Use this
 1,observer
 ```

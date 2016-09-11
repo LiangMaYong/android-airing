@@ -112,9 +112,9 @@ public final class Airing {
      *
      * @param object object
      */
-    public static void unregister(Object object) {
+    public static void unregisterAll(Object object) {
         for (Map.Entry<String, Airing> entry : airingMap.entrySet()) {
-            entry.getValue().unregisterObject(object);
+            entry.getValue().unregister(object);
         }
     }
 
@@ -196,10 +196,10 @@ public final class Airing {
      * @return airing
      */
     @SuppressWarnings("unused")
-    private Airing registerActions(Object object, final String[] actions, final OnAiringListener eventListener) {
+    private Airing register(Object object, final String[] actions, final OnAiringListener eventListener) {
         if (actions != null) {
             for (int i = 0; i < actions.length; i++) {
-                registerAction(object, actions[i], eventListener);
+            	register(object, actions[i], eventListener);
             }
         }
         return this;
@@ -213,7 +213,7 @@ public final class Airing {
      * @param eventListener eventListener
      * @return airing
      */
-    private Airing registerAction(Object object, final String action, final OnAiringListener eventListener) {
+    private Airing register(Object object, final String action, final OnAiringListener eventListener) {
         Map<String, BroadcastReceiver> map = null;
         if (receiverMap.containsKey(object)) {
             map = receiverMap.get(object);
@@ -221,7 +221,7 @@ public final class Airing {
             map = new HashMap<String, BroadcastReceiver>();
         }
         if (map.containsKey(action)) {
-            unregisterAction(object, action);
+        	unregister(object, action);
         }
         BroadcastReceiver broadcastReceiver = new AiringReceiver(object, getName(), action, eventListener);
         IntentFilter filter = new IntentFilter();
@@ -233,12 +233,12 @@ public final class Airing {
     }
 
     /**
-     * unregisterAction
+     * unregister
      *
      * @param object object
      * @param action action
      */
-    private void unregisterAction(Object object, final String action) {
+    private void unregister(Object object, final String action) {
         if (receiverMap.containsKey(object)) {
             Map<String, BroadcastReceiver> map = receiverMap.get(object);
             if (map.containsKey(action)) {
@@ -258,26 +258,26 @@ public final class Airing {
     }
 
     /**
-     * unregisterActions
+     * unregister
      *
      * @param object  object
      * @param actions actions
      */
     @SuppressWarnings("unused")
-    private void unregisterActions(Object object, final String[] actions) {
+    private void unregister(Object object, final String[] actions) {
         if (actions != null) {
             for (int i = 0; i < actions.length; i++) {
-                unregisterAction(object, actions[i]);
+            	unregister(object, actions[i]);
             }
         }
     }
 
     /**
-     * unregisterObject
+     * unregister
      *
      * @param object object
      */
-    private void unregisterObject(Object object) {
+    public void unregister(Object object) {
         if (receiverMap.containsKey(object)) {
             Map<String, BroadcastReceiver> map = receiverMap.get(object);
             for (BroadcastReceiver receiver : map.values()) {
