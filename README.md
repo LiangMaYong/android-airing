@@ -33,7 +33,11 @@ Airing.getDefault().sender("main").sendEmpty();
 ```
 3,unregister
 ```
-Airing.unregister(this);
+Airing.getDefault().observer(this).unregister();
+
+or
+
+Airing.unregisterAll(this);
 ```
 ##License
 ```
