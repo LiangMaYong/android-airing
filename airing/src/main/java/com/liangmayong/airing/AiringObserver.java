@@ -81,8 +81,7 @@ public class AiringObserver {
     public AiringObserver unregister(String action) {
         if (unregisterAction == null) {
             try {
-                unregisterAction = Airing.class.getDeclaredMethod("unregister", Object.class, String.class,
-                        OnAiringListener.class);
+                unregisterAction = Airing.class.getDeclaredMethod("unregister", Object.class, String.class);
                 unregisterAction.setAccessible(true);
             } catch (Exception e) {
             }
