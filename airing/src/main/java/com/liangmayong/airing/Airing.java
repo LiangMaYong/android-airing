@@ -199,7 +199,7 @@ public final class Airing {
     private Airing register(Object object, final String[] actions, final OnAiringListener eventListener) {
         if (actions != null) {
             for (int i = 0; i < actions.length; i++) {
-            	register(object, actions[i], eventListener);
+                register(object, actions[i], eventListener);
             }
         }
         return this;
@@ -221,7 +221,7 @@ public final class Airing {
             map = new HashMap<String, BroadcastReceiver>();
         }
         if (map.containsKey(action)) {
-        	unregister(object, action);
+            unregister(object, action);
         }
         BroadcastReceiver broadcastReceiver = new AiringReceiver(object, getName(), action, eventListener);
         IntentFilter filter = new IntentFilter();
@@ -267,7 +267,7 @@ public final class Airing {
     private void unregister(Object object, final String[] actions) {
         if (actions != null) {
             for (int i = 0; i < actions.length; i++) {
-            	unregister(object, actions[i]);
+                unregister(object, actions[i]);
             }
         }
     }
@@ -277,7 +277,7 @@ public final class Airing {
      *
      * @param object object
      */
-    public void unregister(Object object) {
+    private void unregister(Object object) {
         if (receiverMap.containsKey(object)) {
             Map<String, BroadcastReceiver> map = receiverMap.get(object);
             for (BroadcastReceiver receiver : map.values()) {
