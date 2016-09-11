@@ -79,7 +79,7 @@ public class AiringReceiver extends BroadcastReceiver {
                     } catch (Exception e) {
                     }
                 }
-                getAiringListener().onAiring(new AiringContent(getTarget(),
+                getAiringListener().onAiring(new AiringContent(
                         getAiringName().substring(0, getAiringName().length() - 1), getAction(), what, bundle, object));
             }
         }

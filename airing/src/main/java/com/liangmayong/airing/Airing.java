@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +44,9 @@ public final class Airing {
         }
     }
 
+
     // application
-    private static Application application;
+    private static WeakReference<Application> application = null;
 
     /**
      * getApplication
@@ -52,8 +54,8 @@ public final class Airing {
      * @return application
      */
     private static Application getApplication() {
-        if (application == null) {
-            synchronized (Airing.class) {
+        if (application == null || application.get() == null) {
+            synchronized (Application.class) {
                 if (application == null) {
                     try {
                         Class<?> clazz = Class.forName("android.app.ActivityThread");
@@ -63,7 +65,7 @@ public final class Airing {
                             if (object != null) {
                                 Method getApplication = object.getClass().getDeclaredMethod("getApplication");
                                 if (getApplication != null) {
-                                    application = (Application) getApplication.invoke(object);
+                                    application = new WeakReference<Application>((Application) getApplication.invoke(object));
                                 }
                             }
                         }
@@ -72,7 +74,7 @@ public final class Airing {
                 }
             }
         }
-        return application;
+        return application.get();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
