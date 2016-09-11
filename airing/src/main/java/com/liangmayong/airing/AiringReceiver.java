@@ -73,7 +73,11 @@ public class AiringReceiver extends BroadcastReceiver {
                 Object object = AiringExtras.get(airingName + action);
                 int what = -1;
                 if (bundle != null) {
-                    what = bundle.getInt(AiringContent.AIRING_WHAT_EXTRA, -1);
+                    try {
+                        what = bundle.getInt(AiringContent.AIRING_WHAT_EXTRA, -1);
+                        bundle.remove(AiringContent.AIRING_WHAT_EXTRA);
+                    } catch (Exception e) {
+                    }
                 }
                 getAiringListener().onAiring(new AiringContent(getTarget(),
                         getAiringName().substring(0, getAiringName().length() - 1), getAction(), what, bundle, object));
