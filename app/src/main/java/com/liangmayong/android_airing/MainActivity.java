@@ -1,7 +1,7 @@
 package com.liangmayong.android_airing;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.liangmayong.airing.Airing;

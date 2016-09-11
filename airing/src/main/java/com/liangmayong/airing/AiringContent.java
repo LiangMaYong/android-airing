@@ -25,10 +25,13 @@ public class AiringContent {
     private Bundle extras = null;
     // object
     private Object object = null;
+    // target
+    private Object target = null;
     // what
     private int what = -1;
 
-    public AiringContent(String airingName, String action, int what, Bundle extras, Object object) {
+    public AiringContent(Object target, String airingName, String action, int what, Bundle extras, Object object) {
+        this.target = target;
         this.airingName = airingName;
         this.action = action;
         this.what = what;
@@ -84,6 +87,14 @@ public class AiringContent {
         return object;
     }
 
+    /**
+     * getTarget
+     *
+     * @return target
+     */
+    public Object getTarget() {
+        return target;
+    }
 
     @Override
     public String toString() {

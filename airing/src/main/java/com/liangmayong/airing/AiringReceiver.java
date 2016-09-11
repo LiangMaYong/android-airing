@@ -19,8 +19,11 @@ public class AiringReceiver extends BroadcastReceiver {
     private String action;
     // airingName
     private String airingName;
+    // target
+    private Object target;
 
-    public AiringReceiver(String airingName, String action, OnAiringListener eventListener) {
+    public AiringReceiver(Object target, String airingName, String action, OnAiringListener eventListener) {
+        this.target = target;
         this.airingName = airingName;
         this.action = action;
         this.eventListener = eventListener;
@@ -33,6 +36,15 @@ public class AiringReceiver extends BroadcastReceiver {
      */
     public String getAction() {
         return action;
+    }
+
+    /**
+     * getTarget
+     *
+     * @return target
+     */
+    public Object getTarget() {
+        return target;
     }
 
     /**
@@ -63,7 +75,8 @@ public class AiringReceiver extends BroadcastReceiver {
                 if (bundle != null) {
                     what = bundle.getInt(AiringContent.AIRING_WHAT_EXTRA, -1);
                 }
-                getAiringListener().onAiring(new AiringContent(getAiringName().substring(0, getAiringName().length() - 1), getAction(), what, bundle, object));
+                getAiringListener().onAiring(new AiringContent(getTarget(),
+                        getAiringName().substring(0, getAiringName().length() - 1), getAction(), what, bundle, object));
             }
         }
     }

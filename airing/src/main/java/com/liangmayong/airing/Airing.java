@@ -223,7 +223,7 @@ public final class Airing {
         if (map.containsKey(action)) {
             unregisterAction(object, action);
         }
-        BroadcastReceiver broadcastReceiver = new AiringReceiver(getName(), action, eventListener);
+        BroadcastReceiver broadcastReceiver = new AiringReceiver(object, getName(), action, eventListener);
         IntentFilter filter = new IntentFilter();
         filter.addAction(getName() + action);
         getApplication().registerReceiver(broadcastReceiver, filter);
