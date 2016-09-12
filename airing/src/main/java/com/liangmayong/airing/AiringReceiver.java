@@ -19,11 +19,8 @@ public class AiringReceiver extends BroadcastReceiver {
     private String action;
     // airingName
     private String airingName;
-    // target
-    private Object target;
 
-    public AiringReceiver(Object target, String airingName, String action, OnAiringListener eventListener) {
-        this.target = target;
+    public AiringReceiver(String airingName, String action, OnAiringListener eventListener) {
         this.airingName = airingName;
         this.action = action;
         this.eventListener = eventListener;
@@ -36,15 +33,6 @@ public class AiringReceiver extends BroadcastReceiver {
      */
     public String getAction() {
         return action;
-    }
-
-    /**
-     * getTarget
-     *
-     * @return target
-     */
-    public Object getTarget() {
-        return target;
     }
 
     /**
