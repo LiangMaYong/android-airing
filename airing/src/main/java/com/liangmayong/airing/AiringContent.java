@@ -15,8 +15,11 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class AiringContent {
-
+    public static final String SEPARATOR = "$";
+    //AIRING_WHAT_EXTRA
     public static final String AIRING_WHAT_EXTRA = "airing_what_extra";
+    //AIRING_WHAT_TOKEN
+    public static final String AIRING_WHAT_TOKEN = "airing_what_token";
     // airingName
     private String airingName = "";
     // action
@@ -24,12 +27,12 @@ public class AiringContent {
     // extras
     private Bundle extras = null;
     // object
-    private Object object = null;
+    private AiringEvent event = null;
     // what
     private int what = -1;
 
-    public AiringContent(String airingName, String action, int what, Bundle extras, Object object) {
-        this.object = object;
+    public AiringContent(String airingName, String action, int what, Bundle extras, AiringEvent event) {
+        this.event = event;
         this.airingName = airingName;
         this.action = action;
         this.what = what;
@@ -76,12 +79,12 @@ public class AiringContent {
     }
 
     /**
-     * getObject
+     * getEvent
      *
-     * @return object
+     * @return event
      */
-    public Object getObject() {
-        return object;
+    public AiringEvent getEvent() {
+        return event;
     }
 
     @Override
@@ -90,7 +93,7 @@ public class AiringContent {
                 "airingName='" + airingName + '\'' +
                 ", action='" + action + '\'' +
                 ", extras=" + extras +
-                ", object=" + object +
+                ", event=" + event +
                 ", what=" + what +
                 '}';
     }

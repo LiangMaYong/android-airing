@@ -55,10 +55,10 @@ public class AiringReceiver extends BroadcastReceiver {
 
     @Override
     public final void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(getAiringName() + getAction())) {
+        if (intent.getAction().equals(getAiringName() + AiringContent.SEPARATOR + getAction())) {
             if (getAiringListener() != null) {
                 Bundle bundle = intent.getExtras();
-                Object object = AiringExtras.get(airingName + action);
+                AiringEvent event = AiringExtras.get(intent.getAction());
                 int what = -1;
                 if (bundle != null) {
                     try {
@@ -67,8 +67,17 @@ public class AiringReceiver extends BroadcastReceiver {
                     } catch (Exception e) {
                     }
                 }
-                getAiringListener().onAiring(new AiringContent(
-                        getAiringName().substring(0, getAiringName().length() - 1), getAction(), what, bundle, object));
+                String token = "";
+                if (bundle != null) {
+                    try {
+                        token = bundle.getString(AiringContent.AIRING_WHAT_TOKEN);
+                        bundle.remove(AiringContent.AIRING_WHAT_TOKEN);
+                    } catch (Exception e) {
+                    }
+                }
+                if (Airing.get(getAiringName()).getToken().equals(token)) {
+                    getAiringListener().onAiring(new AiringContent(getAiringName(), getAction(), what, bundle, event));
+                }
             }
         }
     }

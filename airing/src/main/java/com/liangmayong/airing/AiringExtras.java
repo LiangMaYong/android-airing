@@ -1,8 +1,7 @@
 package com.liangmayong.airing;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -17,21 +16,24 @@ public class AiringExtras {
     }
 
     // extras map
-    private static Map<String, List<Object>> extrasMap = new HashMap<String, List<Object>>();
+    private static Map<String, LinkedList<AiringEvent>> extrasMap = new HashMap<String, LinkedList<AiringEvent>>();
 
     /**
      * put
      *
-     * @param name   name
-     * @param object object
+     * @param name  name
+     * @param event event
      */
-    public synchronized static void put(String name, Object object) {
-        if (object != null) {
+    public synchronized static void put(String name, AiringEvent event) {
+        if (event == null) {
+            event = new NullOBJ();
+        }
+        if (event != null) {
             if (extrasMap.containsKey(name)) {
-                extrasMap.get(name).add(object);
+                extrasMap.get(name).add(event);
             } else {
-                List<Object> list = new ArrayList<Object>();
-                list.add(object);
+                LinkedList<AiringEvent> list = new LinkedList<AiringEvent>();
+                list.add(event);
                 extrasMap.put(name, list);
             }
         }
@@ -43,15 +45,21 @@ public class AiringExtras {
      * @param name name
      * @return object
      */
-    public synchronized static Object get(String name) {
+    public synchronized static AiringEvent get(String name) {
         if (extrasMap.containsKey(name)) {
-            List<Object> list = extrasMap.get(name);
+            LinkedList<AiringEvent> list = extrasMap.get(name);
             if (!list.isEmpty()) {
-                Object object = list.get(0);
-                list.remove(0);
-                return object;
+                AiringEvent event = list.getFirst();
+                list.removeFirst();
+                if (event instanceof NullOBJ) {
+                    return null;
+                }
+                return event;
             }
         }
         return null;
+    }
+
+    private static class NullOBJ implements AiringEvent {
     }
 }

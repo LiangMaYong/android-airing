@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.liangmayong.airing.Airing;
 import com.liangmayong.airing.AiringContent;
 import com.liangmayong.airing.OnAiringListener;
+import com.liangmayong.airing.OnEventCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,14 +26,23 @@ public class MainActivity extends AppCompatActivity {
             public void onAiring(AiringContent content) {
                 Toast.makeText(getApplicationContext(), content.toString(), Toast.LENGTH_SHORT).show();
             }
+        }).register("aevent", new OnEventCallback<AEvent>() {
+            @Override
+            public void onEvent(AEvent event) {
+                Toast.makeText(getApplicationContext(), event.toString(), Toast.LENGTH_SHORT).show();
+            }
         });
-        Airing.getDefault().sender("main").sendObject(this).sendWhat(1).sendEmpty();
+        Airing.getDefault().sender("main").send(0).sendEmpty();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Airing.getDefault().sender("main").sendWhat(1);
+                Airing.getDefault().sender("main").send(0);
             }
         }, 2000);
+        AEvent aEvent = new AEvent();
+        aEvent.setName("lmy");
+        aEvent.setPass("202020");
+        Airing.getDefault().sender("aevent").sendEvent(aEvent);
     }
 
     @Override

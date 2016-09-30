@@ -25,8 +25,8 @@ public final class Airing {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////
+    private static final String TAG = "Airing";
 
-    private static String TAG = "Airing";
 
     /**
      * isDebugable
@@ -110,7 +110,7 @@ public final class Airing {
     }
 
     /**
-     * unregister
+     * unregisterAll
      *
      * @param object object
      */
@@ -124,6 +124,26 @@ public final class Airing {
     //////////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////
 
     private String airingName = "";
+
+    private String token = "airing";
+
+    /**
+     * getToken
+     *
+     * @return token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * setToken
+     *
+     * @param token token
+     */
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     /**
      * cache event receiver
@@ -145,7 +165,7 @@ public final class Airing {
      * @return action prefix
      */
     private String getName() {
-        return airingName + ".";
+        return airingName;
     }
 
     /**
@@ -175,17 +195,21 @@ public final class Airing {
      * @param bundle bundle
      */
     @SuppressWarnings("unused")
-    private void sendAction(String action, Bundle bundle, Object object) {
+    private void sendAction(String action, Bundle bundle, AiringEvent event) {
         Intent intent = new Intent();
-        String newAction = getName() + action;
+        String newAction = getName() + AiringContent.SEPARATOR + action;
         if (isDebugable()) {
             Log.d(TAG, "send Airing:" + newAction + " extras:" + bundle);
         }
         intent.setAction(newAction);
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        bundle.putString(AiringContent.AIRING_WHAT_TOKEN, getToken());
         if (bundle != null && !bundle.isEmpty()) {
             intent.putExtras(bundle);
         }
-        AiringExtras.put(newAction, object);
+        AiringExtras.put(newAction, event);
         getApplication().sendBroadcast(intent);
     }
 
@@ -227,7 +251,7 @@ public final class Airing {
         }
         BroadcastReceiver broadcastReceiver = new AiringReceiver(getName(), action, eventListener);
         IntentFilter filter = new IntentFilter();
-        filter.addAction(getName() + action);
+        filter.addAction(getName() + AiringContent.SEPARATOR + action);
         getApplication().registerReceiver(broadcastReceiver, filter);
         map.put(action, broadcastReceiver);
         receiverMap.put(object, map);

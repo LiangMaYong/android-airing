@@ -1,11 +1,14 @@
 ﻿# android-airing
-this is android airing
+this is android airing library
 
-Welcome Star and Issues
 
-download jar : [android-airing-src.jar](https://raw.githubusercontent.com/LiangMaYong/android-airing/master/jar/android-airing-src.jar)
+[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-airing/releases/tag/V1.0.0)
 
-## Use this
+## Gradle
+```
+compile 'com.liangmayong.android:airing:$LatestVersion'
+```
+## Get start
 1,observer
 ```
 Airing.getDefault().observer(this).register("main", new OnAiringListener() {
@@ -22,14 +25,15 @@ Airing.getDefault().observer(this).register("main", new OnAiringListener() {
 ```
 2,sender
 ```
-//sendWhat
-Airing.getDefault().sender("main").sendWhat(1);
-
-//sendObject
-Airing.getDefault().sender("main").sendObject(this);
-
 //sendEmpty
 Airing.getDefault().sender("main").sendEmpty();
+//send what
+Airing.getDefault().sender("main").send(1);
+//send bundle
+Airing.getDefault().sender("main").send(1,extras);
+//send Event
+//Event can only be transmitted within the process
+Airing.getDefault().sender("main").sendEvent(...);
 ```
 3,unregister
 ```
