@@ -2,7 +2,7 @@
 this is android airing library
 
 
-[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-airing/releases/tag/V1.0.0)
+[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-airing/releases/tags/V1.0.0)
 
 ## Gradle
 ```
