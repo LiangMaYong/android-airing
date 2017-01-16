@@ -16,22 +16,22 @@ import java.util.ArrayList;
  */
 public class AiringContent {
     public static final String SEPARATOR = "$";
-    //AIRING_WHAT_EXTRA
+    // AIRING_EVENT_EXTRA
+    public static final String AIRING_EVENT_EXTRA = "airing_event_extra";
+    // AIRING_WHAT_EXTRA
     public static final String AIRING_WHAT_EXTRA = "airing_what_extra";
-    //AIRING_WHAT_TOKEN
-    public static final String AIRING_WHAT_TOKEN = "airing_what_token";
     // airingName
     private String airingName = "";
     // action
     private String action = "";
     // extras
     private Bundle extras = null;
-    // object
-    private AiringEvent event = null;
+    // event
+    private Object event = null;
     // what
     private int what = -1;
 
-    public AiringContent(String airingName, String action, int what, Bundle extras, AiringEvent event) {
+    public AiringContent(String airingName, String action, int what, Bundle extras, Object event) {
         this.event = event;
         this.airingName = airingName;
         this.action = action;
@@ -81,10 +81,16 @@ public class AiringContent {
     /**
      * getEvent
      *
-     * @return event
+     * @param <T> type
+     * @return type instance
      */
-    public AiringEvent getEvent() {
-        return event;
+    public <T> T getEvent() {
+        T t = null;
+        try {
+            t = (T) event;
+        } catch (Exception e) {
+        }
+        return t;
     }
 
     @Override

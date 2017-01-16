@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.liangmayong.airing.converter.ParcelableConverter;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -24,7 +26,9 @@ import java.util.Map;
 public final class Airing {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static final String TAG = "Airing";
 
 
@@ -78,7 +82,11 @@ public final class Airing {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private Airing() {
+    }
 
     // airingMap
     private static Map<String, Airing> airingMap = new HashMap<String, Airing>();
@@ -104,46 +112,18 @@ public final class Airing {
         } else {
             Airing eventSink = new Airing();
             eventSink.setName(airingName);
+            eventSink.setConverter(new ParcelableConverter());
             airingMap.put(airingName, eventSink);
             return eventSink;
         }
     }
 
-    /**
-     * unregisterAll
-     *
-     * @param object object
-     */
-    public static void unregisterAll(Object object) {
-        for (Map.Entry<String, Airing> entry : airingMap.entrySet()) {
-            entry.getValue().unregister(object);
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private String airingName = "";
-
-    private String token = "airing";
-
-    /**
-     * getToken
-     *
-     * @return token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * setToken
-     *
-     * @param token token
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private AiringConverter converter;
 
     /**
      * cache event receiver
@@ -157,6 +137,24 @@ public final class Airing {
      */
     private void setName(String airingName) {
         this.airingName = airingName;
+    }
+
+    /**
+     * setConverter
+     *
+     * @param converter converter
+     */
+    private void setConverter(AiringConverter converter) {
+        this.converter = converter;
+    }
+
+    /**
+     * getConverter
+     *
+     * @return converter
+     */
+    private AiringConverter getConverter() {
+        return converter;
     }
 
     /**
@@ -188,6 +186,11 @@ public final class Airing {
         return new AiringObserver(this, object);
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * sendAction
      *
@@ -195,23 +198,31 @@ public final class Airing {
      * @param bundle bundle
      */
     @SuppressWarnings("unused")
-    private void sendAction(String action, Bundle bundle, AiringEvent event) {
+    private void sendAction(String action, Bundle bundle, Object event) {
         Intent intent = new Intent();
         String newAction = getName() + AiringContent.SEPARATOR + action;
-        if (isDebugable()) {
-            Log.d(TAG, "send Airing:" + newAction + " extras:" + bundle);
-        }
         intent.setAction(newAction);
         if (bundle == null) {
             bundle = new Bundle();
         }
-        bundle.putString(AiringContent.AIRING_WHAT_TOKEN, getToken());
+        if (event != null) {
+            Bundle eventBundle = getConverter().toExtras(event);
+            if (eventBundle != null) {
+                bundle.putBundle(AiringContent.AIRING_EVENT_EXTRA, eventBundle);
+            }
+        }
         if (bundle != null && !bundle.isEmpty()) {
             intent.putExtras(bundle);
         }
-        AiringExtras.put(newAction, event);
+        if (isDebugable()) {
+            Log.d(TAG, "send Airing:" + newAction + " extras:" + bundle);
+        }
         getApplication().sendBroadcast(intent);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * register
@@ -246,14 +257,20 @@ public final class Airing {
         } else {
             map = new HashMap<String, BroadcastReceiver>();
         }
-        if (map.containsKey(action)) {
-            unregister(object, action);
-        }
-        BroadcastReceiver broadcastReceiver = new AiringReceiver(getName(), action, eventListener);
+        BroadcastReceiver broadcastReceiver = new AiringReceiver(getConverter(), getName(), action, eventListener);
         IntentFilter filter = new IntentFilter();
         filter.addAction(getName() + AiringContent.SEPARATOR + action);
         getApplication().registerReceiver(broadcastReceiver, filter);
-        map.put(action, broadcastReceiver);
+        int i = 0;
+        String key = action + "$" + i;
+        while (map.containsKey(key)) {
+            i++;
+            key = action + "$" + i;
+        }
+        if (isDebugable()) {
+            Log.d(TAG, "register:" + action + " index:" + i);
+        }
+        map.put(key, broadcastReceiver);
         receiverMap.put(object, map);
         return this;
     }
@@ -267,13 +284,20 @@ public final class Airing {
     private void unregister(Object object, final String action) {
         if (receiverMap.containsKey(object)) {
             Map<String, BroadcastReceiver> map = receiverMap.get(object);
-            if (map.containsKey(action)) {
+            int i = 0;
+            String key = action + "$" + i;
+            while (map.containsKey(key)) {
                 try {
-                    BroadcastReceiver broadcastReceiver = map.get(action);
+                    BroadcastReceiver broadcastReceiver = map.get(key);
                     getApplication().unregisterReceiver(broadcastReceiver);
                 } catch (Exception e) {
                 }
-                map.remove(action);
+                map.remove(key);
+                if (isDebugable()) {
+                    Log.d(TAG, "unregister:" + action + " index:" + i);
+                }
+                i++;
+                key = action + "$" + i;
             }
             if (map.isEmpty()) {
                 receiverMap.remove(object);
@@ -303,6 +327,7 @@ public final class Airing {
      *
      * @param object object
      */
+    @SuppressWarnings("unused")
     private void unregister(Object object) {
         if (receiverMap.containsKey(object)) {
             Map<String, BroadcastReceiver> map = receiverMap.get(object);

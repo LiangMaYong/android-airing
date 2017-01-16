@@ -1,8 +1,7 @@
 ﻿# android-airing
 this is android airing library
 
-
-[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-airing/releases/tag/V1.0.0)
+[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.1.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-airing/releases)
 
 ## Gradle
 ```
@@ -25,25 +24,14 @@ Airing.getDefault().observer(this).register("main", new OnAiringListener() {
 ```
 2,sender
 ```
-//sendEmpty
-Airing.getDefault().sender("main").sendEmpty();
-//send what
-Airing.getDefault().sender("main").send(1);
-//send bundle
-Airing.getDefault().sender("main").send(1,extras);
-//send Event
-//Event can only be transmitted within the process
-Airing.getDefault().sender("main").sendEvent(...);
+Airing.getDefault().sender("aevent").postToTarget(...);
 ```
 3,unregister
 ```
-Airing.getDefault().observer(this).unregister();
-
-or
-
-Airing.unregisterAll(this);
+Airing.getDefault().observer(this).unregister(...);
 ```
-##License
+
+## License
 ```
 Copyright 2016 LiangMaYong
 

@@ -12,81 +12,146 @@ import java.lang.reflect.Method;
  */
 public class AiringSender {
 
-    // methods
+    // sendAction
     private static Method sendAction;
+    // sendActionName
+    private static String sendActionName = "sendAction";
     // action
-    private String action = "";
+    private final String action;
     // airing
-    private Airing airing;
+    private final Airing airing;
+    // _extras
+    private final Bundle extras;
+    // _event
+    private Object event = null;
 
+    /**
+     * AiringSender
+     *
+     * @param airing airing
+     * @param action action
+     */
     public AiringSender(Airing airing, String action) {
         this.action = action;
         this.airing = airing;
+        this.extras = new Bundle();
+        _reset();
     }
 
-
     /**
-     * sendEmpty
+     * postToTarget
      *
-     * @return sender
+     * @param what   what
+     * @param extras bundle
+     * @param event  event
      */
-    public AiringSender sendEmpty() {
-        return send(-1);
+    public void postToTarget(int what, Bundle extras, Object event) {
+        _reset();
+        _extras(extras)._what(what)._event(event)._sendToTarget();
     }
 
     /**
-     * send
+     * postToTarget
+     *
+     * @param what   what
+     * @param extras bundle
+     */
+    public void postToTarget(int what, Bundle extras) {
+        _reset();
+        _extras(extras)._what(what)._sendToTarget();
+    }
+
+    /**
+     * postToTarget
+     *
+     * @param event event
+     */
+    public void postToTarget(Object event) {
+        _reset();
+        _event(event)._sendToTarget();
+    }
+
+    /**
+     * postEmtpyToTarget
+     */
+    public void postEmtpyToTarget() {
+        _reset();
+        _sendToTarget();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////  Private  /////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * _what
      *
      * @param what what
      * @return sender
      */
-    public AiringSender send(int what) {
-        Bundle extras = new Bundle();
+    private AiringSender _what(int what) {
         extras.putInt(AiringContent.AIRING_WHAT_EXTRA, what);
-        _send(extras, null);
         return this;
     }
 
     /**
-     * send
+     * _extras
      *
-     * @param what   what
      * @param extras extras
      * @return sender
      */
-    public AiringSender send(int what, Bundle extras) {
-        if (extras == null) {
-            extras = new Bundle();
+    private AiringSender _extras(Bundle extras) {
+        if (extras != null) {
+            this.extras.putAll(extras);
         }
-        extras.putInt(AiringContent.AIRING_WHAT_EXTRA, what);
-        _send(extras, null);
+        return this;
+    }
+
+    /**
+     * _event
+     *
+     * @param event event
+     * @return sender
+     */
+    private AiringSender _event(Object event) {
+        this.event = event;
         return this;
     }
 
     /**
      * sendEvent
      *
-     * @param event event
      * @return sender
      */
-    public AiringSender sendEvent(AiringEvent event) {
-        _send(null, event);
-        return this;
+    private void _sendToTarget() {
+        _send(extras, event);
+        _reset();
+    }
+
+
+    /**
+     * _reset
+     */
+    private void _reset() {
+        this.extras.clear();
+        this.extras.putInt(AiringContent.AIRING_WHAT_EXTRA, -1);
+        this.event = null;
     }
 
     /**
-     * send
+     * _send
      *
      * @param bundle bundle
+     * @param event  _event
      * @return sender
      */
-    private AiringSender _send(Bundle bundle, AiringEvent event) {
+    private void _send(Bundle bundle, Object event) {
         if (bundle == null) {
             bundle = new Bundle();
         }
         if (sendAction == null) {
             try {
-                sendAction = Airing.class.getDeclaredMethod("sendAction", String.class, Bundle.class, AiringEvent.class);
+                sendAction = Airing.class.getDeclaredMethod(sendActionName, String.class, Bundle.class, Object.class);
                 sendAction.setAccessible(true);
             } catch (Exception e) {
             }
@@ -97,6 +162,5 @@ public class AiringSender {
             } catch (Exception e) {
             }
         }
-        return this;
     }
 }

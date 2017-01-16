@@ -19,8 +19,11 @@ public class AiringReceiver extends BroadcastReceiver {
     private String action;
     // airingName
     private String airingName;
+    // converter
+    private AiringConverter converter;
 
-    public AiringReceiver(String airingName, String action, OnAiringListener eventListener) {
+    public AiringReceiver(AiringConverter converter, String airingName, String action, OnAiringListener eventListener) {
+        this.converter = converter;
         this.airingName = airingName;
         this.action = action;
         this.eventListener = eventListener;
@@ -58,7 +61,10 @@ public class AiringReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(getAiringName() + AiringContent.SEPARATOR + getAction())) {
             if (getAiringListener() != null) {
                 Bundle bundle = intent.getExtras();
-                AiringEvent event = AiringExtras.get(intent.getAction());
+                Bundle eventBundle = null;
+                if (bundle.containsKey(AiringContent.AIRING_EVENT_EXTRA)) {
+                    eventBundle = bundle.getBundle(AiringContent.AIRING_EVENT_EXTRA);
+                }
                 int what = -1;
                 if (bundle != null) {
                     try {
@@ -67,17 +73,7 @@ public class AiringReceiver extends BroadcastReceiver {
                     } catch (Exception e) {
                     }
                 }
-                String token = "";
-                if (bundle != null) {
-                    try {
-                        token = bundle.getString(AiringContent.AIRING_WHAT_TOKEN);
-                        bundle.remove(AiringContent.AIRING_WHAT_TOKEN);
-                    } catch (Exception e) {
-                    }
-                }
-                if (Airing.get(getAiringName()).getToken().equals(token)) {
-                    getAiringListener().onAiring(new AiringContent(getAiringName(), getAction(), what, bundle, event));
-                }
+                getAiringListener().onAiring(new AiringContent(getAiringName(), getAction(), what, bundle, converter.toEvent(eventBundle)));
             }
         }
     }
