@@ -110,11 +110,11 @@ public final class Airing {
         if (airingMap.containsKey(airingName)) {
             return airingMap.get(airingName);
         } else {
-            Airing eventSink = new Airing();
-            eventSink.setName(airingName);
-            eventSink.setConverter(new ParcelableConverter());
-            airingMap.put(airingName, eventSink);
-            return eventSink;
+            Airing airing = new Airing();
+            airing.setName(airingName);
+            airing.setConverter(new ParcelableConverter());
+            airingMap.put(airingName, airing);
+            return airing;
         }
     }
 
